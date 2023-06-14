@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Clustering Results</title>
+</head>
+<body>
+    <h1>Face Clustering Results</h1>
+    {% for label, filenames in clusters.items() %}
+    <h2>Cluster {{ label }}</h2>
+    <div>
+        {% for filename in filenames %}
+        <img src="{{ filename }}" style="width: 200px; margin: 10px;">
+        {% endfor %}
+    </div>
+    {% endfor %}
+</body>
+</html>

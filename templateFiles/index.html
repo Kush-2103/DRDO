@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Clustering</title>
+    <style>
+        .cluster {
+            margin-bottom: 20px;
+        }
+        .cluster-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .cluster-image {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Face Clustering</h1>
+
+    <h2>Upload Image</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg, .jpeg, .png">
+        <input type="submit" value="Upload">
+    </form>
+
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% endif %}
+
+    {% for label, filenames in dbscan_clusters.items() %}
+        <div class="cluster">
+            <h2 class="cluster-title">DBSCAN Cluster {{ label }}</h2>
+            {% for filename in filenames %}
+                <img class="cluster-image" src="{{ url_for('static', filename=filename) }}" width="200" height="200">
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {% for label, filenames in kmeans_clusters.items() %}
+        <div class="cluster">
+            <h2 class="cluster-title">K-Means Cluster {{ label }}</h2>
+            {% for filename in filenames %}
+                <img class="cluster-image" src="{{ url_for('static', filename=filename) }}" width="200" height="200">
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {% for label, filenames in spectral_clusters.items() %}
+        <div class="cluster">
+            <h2 class="cluster-title">Spectral Cluster {{ label }}</h2>
+            {% for filename in filenames %}
+                <img class="cluster-image" src="{{ url_for('static', filename=filename) }}" width="200" height="200">
+            {% endfor %}
+        </div>
+    {% endfor %}
+</body>
+</html>
