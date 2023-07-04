@@ -1,0 +1,21 @@
+body {
+    padding: 20px;
+}
+
+.cluster {
+    margin-bottom: 20px;
+}
+
+.cluster-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.cluster-image {
+    display: inline-block;
+    margin-right: 10px;
+}
+.t {
+margin-bottom: .5rem;
+font-weight: 500;
+line-height: 3;}

@@ -2,58 +2,98 @@
 <html>
 <head>
     <title>Face Clustering</title>
-    <style>
-        .cluster {
-            margin-bottom: 20px;
-        }
-        .cluster-title {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .cluster-image {
-            display: inline-block;
-            margin-right: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Face Clustering</h1>
 
-    <h2>Upload Image</h2>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".jpg, .jpeg, .png">
-        <input type="submit" value="Upload">
-    </form>
-
-    {% if error_message %}
-        <p>{{ error_message }}</p>
-    {% endif %}
-
-    {% for label, filenames in dbscan_clusters.items() %}
-        <div class="cluster">
-            <h2 class="cluster-title">DBSCAN Cluster {{ label }}</h2>
-            {% for filename in filenames %}
-                <img class="cluster-image" src="{{ url_for('static', filename=filename) }}" width="200" height="200">
-            {% endfor %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Face Clustering</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#dbscan">DBSCAN</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#kmeans">KMEANS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#spectral">SPECTRAL</a>
+                </li>
+            </ul>
         </div>
-    {% endfor %}
+    </nav>
+    <div class="container   text-center" style="min-height: 100vh;">
 
-    {% for label, filenames in kmeans_clusters.items() %}
-        <div class="cluster">
-            <h2 class="cluster-title">K-Means Cluster {{ label }}</h2>
-            {% for filename in filenames %}
-                <img class="cluster-image" src="{{ url_for('static', filename=filename) }}" width="200" height="200">
-            {% endfor %}
+        <div id="introduction">
+            <h2 class="mt-4 ">Introduction</h2>
+            <p>This project aims to cluster faces in images using different clustering algorithms.</p>
         </div>
-    {% endfor %}
+        
 
-    {% for label, filenames in spectral_clusters.items() %}
-        <div class="cluster">
-            <h2 class="cluster-title">Spectral Cluster {{ label }}</h2>
-            {% for filename in filenames %}
-                <img class="cluster-image" src="{{ url_for('static', filename=filename) }}" width="200" height="200">
+        <h2 class="mt-4">Upload Images</h2>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Select Images:</label>
+                <input type="file" class="form-control-file" name="file" id="file" accept=".jpg, .jpeg, .png" multiple>
+            </div>
+
+            <div class="form-group">
+                <label for="algorithm">Select Clustering Algorithm:</label>
+                <select class="form-control" name="algorithm" id="algorithm">
+                    <option value="dbscan">DBSCAN</option>
+                    <option value="kmeans">K-Means</option>
+                    <option value="spectral">Spectral Clustering</option>
+                </select>
+            </div>
+
+            <div id="cluster-options" style="display: none;">
+                <div class="form-group">
+                    <label for="num-clusters">Number of Clusters:</label>
+                    <input type="number" class="form-control" name="num_clusters" id="num-clusters" min="2" step="1">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Upload and Cluster</button>
+        </form>
+
+        {% if error_message %}
+            <p class="text-danger mt-4">{{ error_message }}</p>
+        {% endif %}
+
+        {% if clusters %}
+            {% for label, filenames in clusters.items() %}
+                <div class="cluster">
+                    <h2 class="cluster-title">{{ algorithm|capitalize }} Cluster {{ label }}</h2>
+                    {% for filename in filenames %}
+                        <img class="cluster-image" src="{{ url_for('static', filename=filename) }}" width="200" height="200">
+                    {% endfor %}
+                </div>
             {% endfor %}
-        </div>
-    {% endfor %}
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#algorithm').change(function() {
+                var algorithm = $(this).val();
+                var clusterOptions = $('#cluster-options');
+                if (algorithm === 'kmeans' || algorithm === 'spectral') {
+                    clusterOptions.show();
+                } else {
+                    clusterOptions.hide();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
